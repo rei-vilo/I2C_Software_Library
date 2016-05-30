@@ -15,15 +15,12 @@ Copyright © 2013-2014
 
 Those parameters in `I2C_SoftwareLibrary.cpp` might need to be adjusted. 
 
-`
+```
 const uint8_t DELAY_LONG = 32;
-
 const uint8_t DELAY_FULL = 8;
-
 const uint8_t DELAY_HALF = 4;
-
 const uint8_t DELAY_PART = 2;
-`
+```
 
 ### References
   
