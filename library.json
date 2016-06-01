@@ -1,0 +1,20 @@
+{
+    "name": "Master I²C Software Library",
+    "description": "This library only features master I²C but keeps the same functions as the hardware I²C Wire.h library.",
+    "keywords": "I2C, Wire, Energia",
+    "authors":
+    {
+        "name":  "Rei Vilo",
+        "url":   "https://github.com/rei-vilo",
+        "maintainer": true
+    },
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/rei-vilo/I2C_Software_Library.git"
+    },
+    "url": "http://embeddedcomputing.weebly.com/master-isup2c-software-library.html",
+    "frameworks": "energia",
+    "platforms": "msp430"
+    "examples": "Examples/*/*.ino"
+}

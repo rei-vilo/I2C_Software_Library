@@ -30,11 +30,17 @@ const uint8_t DELAY_PART = 2;
 #define TICKS_PER_US (TICKS_PER_MS / 1000)
 void delayI2Cms(uint16_t delay)
 {
-    while (delay--) __delay_cycles(TICKS_PER_MS);
+    while (delay--)
+    {
+        __delay_cycles(TICKS_PER_MS);
+    }
 }
 void delayI2Cus(uint16_t delay)
 {
-    while (delay--) __delay_cycles(TICKS_PER_US);
+    while (delay--)
+    {
+        __delay_cycles(TICKS_PER_US);
+    }
 }
 uint8_t SoftwareWire::rxBuffer[BUFFER_LENGTH];
 uint8_t SoftwareWire::rxBufferIndex = 0;
@@ -44,11 +50,13 @@ uint8_t SoftwareWire::txBuffer[BUFFER_LENGTH];
 uint8_t SoftwareWire::txBufferIndex = 0;
 uint8_t SoftwareWire::txBufferLength = 0;
 uint8_t SoftwareWire::transmitting = 0;
-SoftwareWire::SoftwareWire(uint8_t pinSDA, uint8_t pinSCL) {
+SoftwareWire::SoftwareWire(uint8_t pinSDA, uint8_t pinSCL)
+{
     _pinSDA = pinSDA;
     _pinSCL = pinSCL;
 }
-void SoftwareWire::begin() {
+void SoftwareWire::begin()
+{
     pinMode(_pinSDA, OUTPUT);
     digitalWrite(_pinSDA, HIGH);
     pinMode(_pinSCL, OUTPUT);
@@ -78,12 +86,19 @@ uint8_t SoftwareWire::endTransmission(void)
 }
 uint8_t SoftwareWire::requestFrom(uint8_t address, uint8_t length)
 {
-    if (length > BUFFER_LENGTH) length = BUFFER_LENGTH;
-    startI2C(address, I2C_READ);
-    if (length > 1) {
-        for (uint8_t i=0; i<length-1; i++) rxBuffer[i] = readI2C(false);
+    if (length > BUFFER_LENGTH)
+    {
+        length = BUFFER_LENGTH;
     }
-    rxBuffer[length-1] = readI2C(true);
+    startI2C(address, I2C_READ);
+    if (length > 1)
+    {
+        for (uint8_t i = 0; i < length - 1; i++)
+        {
+            rxBuffer[i] = readI2C(false);
+        }
+    }
+    rxBuffer[length - 1] = readI2C(true);
     stopI2C();
     rxBufferIndex = 0;
     rxBufferLength = length;
@@ -91,24 +106,37 @@ uint8_t SoftwareWire::requestFrom(uint8_t address, uint8_t length)
 }
 size_t SoftwareWire::write(uint8_t data)
 {
-    if (transmitting){
-        if (txBufferLength >= BUFFER_LENGTH) {
+    if (transmitting)
+    {
+        if (txBufferLength >= BUFFER_LENGTH)
+        {
             return 0;
         }
         txBuffer[txBufferIndex] = data;
         ++txBufferIndex;
         txBufferLength = txBufferIndex;
-    } else {
+    }
+    else
+    {
         writeI2C(data);
     }
     return 1;
 }
 size_t SoftwareWire::write(const uint8_t *data, size_t length)
 {
-    if (transmitting) {
-        for (size_t i = 0; i < length; ++i) write(data[i]);
-    } else {
-        for (size_t i = 0; i < length; ++i) writeI2C(data[i]);
+    if (transmitting)
+    {
+        for (size_t i = 0; i < length; ++i)
+        {
+            write(data[i]);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < length; ++i)
+        {
+            writeI2C(data[i]);
+        }
     }
     return length;
 }
@@ -119,7 +147,8 @@ int SoftwareWire::available(void)
 int SoftwareWire::read(void)
 {
     int value = -1;
-    if(rxBufferIndex < rxBufferLength){
+    if (rxBufferIndex < rxBufferLength)
+    {
         value = rxBuffer[rxBufferIndex];
         ++rxBufferIndex;
     }
@@ -128,24 +157,32 @@ int SoftwareWire::read(void)
 int SoftwareWire::peek(void)
 {
     int value = -1;
-    if (rxBufferIndex < rxBufferLength) value = rxBuffer[rxBufferIndex];
+    if (rxBufferIndex < rxBufferLength)
+    {
+        value = rxBuffer[rxBufferIndex];
+    }
     return value;
 }
 void SoftwareWire::flush(void)
 {
     ;
 }
-uint8_t SoftwareWire::readI2C(uint8_t last) {
+uint8_t SoftwareWire::readI2C(uint8_t last)
+{
     uint8_t data = 0;
     digitalWrite(_pinSDA, LOW);
     delayI2Cus(DELAY_LONG);
     pinMode(_pinSDA, INPUT);
     delayI2Cus(DELAY_HALF);
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint8_t i = 0; i < 8; i++)
+    {
         data <<= 1;
         digitalWrite(_pinSCL, HIGH);
         delayI2Cus(DELAY_PART);
-        if (digitalRead(_pinSDA)) data |= 1;
+        if (digitalRead(_pinSDA))
+        {
+            data |= 1;
+        }
         delayI2Cus(DELAY_PART);
         digitalWrite(_pinSCL, LOW);
         delayI2Cus(DELAY_HALF);
@@ -161,25 +198,32 @@ uint8_t SoftwareWire::readI2C(uint8_t last) {
 }
 uint8_t SoftwareWire::readI2C(uint8_t* data, uint8_t length)
 {
-    if (length > 1) {
-        while (--length) *data++= readI2C(false);
+    if (length > 1)
+    {
+        while (--length)
+        {
+            *data++ = readI2C(false);
+        }
     }
     *data = readI2C(true);
 }
-bool SoftwareWire::restartI2C(uint8_t address, uint8_t RW) {
+bool SoftwareWire::restartI2C(uint8_t address, uint8_t RW)
+{
     digitalWrite(_pinSDA, HIGH);
     digitalWrite(_pinSCL, HIGH);
     delayI2Cus(DELAY_FULL);
     return startI2C(address, RW);
 }
-bool SoftwareWire::startI2C(uint8_t address, uint8_t RW) {
+bool SoftwareWire::startI2C(uint8_t address, uint8_t RW)
+{
     pinMode(_pinSDA, OUTPUT);
     digitalWrite(_pinSDA, LOW);
     digitalWrite(_pinSCL, LOW);
     delayI2Cus(DELAY_FULL);
     return writeI2C((address << 1) + RW);
 }
-void SoftwareWire::stopI2C(void) {
+void SoftwareWire::stopI2C(void)
+{
     pinMode(_pinSDA, OUTPUT);
     digitalWrite(_pinSDA, LOW);
     delayI2Cus(DELAY_FULL);
@@ -188,13 +232,21 @@ void SoftwareWire::stopI2C(void) {
     digitalWrite(_pinSDA, HIGH);
     delayI2Cus(DELAY_FULL);
 }
-bool SoftwareWire::writeI2C(uint8_t data) {
+bool SoftwareWire::writeI2C(uint8_t data)
+{
     pinMode(_pinSDA, OUTPUT);
-    for (uint8_t i=0; i < 8; ++i ){   
-        if (data & 0x80) digitalWrite(_pinSDA, HIGH);
-        else digitalWrite(_pinSDA, LOW);
+    for (uint8_t i = 0; i < 8; ++i)
+    {
+        if (data & 0x80)
+        {
+            digitalWrite(_pinSDA, HIGH);
+        }
+        else
+        {
+            digitalWrite(_pinSDA, LOW);
+        }
         digitalWrite(_pinSCL, HIGH);
-        data <<= 1;  
+        data <<= 1;
         delayI2Cus(DELAY_HALF);
         digitalWrite(_pinSCL, LOW);
         delayI2Cus(DELAY_HALF);
@@ -202,7 +254,10 @@ bool SoftwareWire::writeI2C(uint8_t data) {
     pinMode(_pinSDA, INPUT);
     digitalWrite(_pinSCL, HIGH);
     uint8_t result = !digitalRead(_pinSDA);
-    if (result) digitalWrite(_pinSDA, LOW);
+    if (result)
+    {
+        digitalWrite(_pinSDA, LOW);
+    }
     delayI2Cus(DELAY_HALF);
     digitalWrite(_pinSCL, LOW);
     delayI2Cus(DELAY_FULL);
@@ -211,6 +266,9 @@ bool SoftwareWire::writeI2C(uint8_t data) {
 bool SoftwareWire::writeI2C(uint8_t* data, size_t length)
 {
     uint8_t result;
-    for (uint8_t i=0; i < length; i++) result = writeI2C(data[i]);
+    for (uint8_t i = 0; i < length; i++)
+    {
+        result = writeI2C(data[i]);
+    }
     return result;
 }
