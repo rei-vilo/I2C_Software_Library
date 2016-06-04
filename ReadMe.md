@@ -24,12 +24,11 @@ const uint8_t DELAY_PART = 2;
 
 ### References
   
-* Feed-back from icserny
-
-[http://forum.43oh.com/topic/3617-energia-library-software-i2c-master-for-msp430g2553/?p=44399](http://forum.43oh.com/topic/3617-energia-library-software-i2c-master-for-msp430g2553/?p=44399)
-
+* Feed-back from icserny at [http://forum.43oh.com/topic/3617-energia-library-software-i2c-master-for-msp430g2553/?p=44399](http://forum.43oh.com/topic/3617-energia-library-software-i2c-master-for-msp430g2553/?p=44399)
 
 
 ### Licence
 
-Creative Commons [Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+![image](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+
+This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
